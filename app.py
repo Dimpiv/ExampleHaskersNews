@@ -77,4 +77,4 @@ if __name__ == '__main__':
     client = Spider(url="https://news.ycombinator.com/")
     loop = asyncio.get_event_loop()
     loop.run_until_complete(client.parse_posts())
-    web.run_app(client.app, host="127.0.0.1", port=8000)
+    web.run_app(client.app, host="0.0.0.0", port=8000)
