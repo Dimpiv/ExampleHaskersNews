@@ -11,5 +11,6 @@ RUN set -eux \
     && rm -rf /root/.cache/pip
 
 COPY . /usr/src/app/
-CMD ["python3","app.py"]
 EXPOSE 8000/tcp
+
+CMD ["python3","app.py"]
