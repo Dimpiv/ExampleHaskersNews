@@ -9,14 +9,13 @@ from bs4 import BeautifulSoup
 from aiohttp import web
 from src.model import SqlTool
 
-base = SqlTool()
-
 
 class Parser(BeautifulSoup, ABC):
     """Parsing web methods"""
 
     def __init__(self, html):
         super().__init__(html, "html.parser")
+        self.base = SqlTool()
 
     def set_titles(self):
         """Save to database titles and urls from remote server"""
@@ -24,7 +23,7 @@ class Parser(BeautifulSoup, ABC):
         main_table = self.find("table", "itemlist")
         for title in main_table.find_all("a", "storylink"):
             result.append(dict(title=title.text, url=title.get("href")))
-        base.add_posts(result)
+        self.base.add_posts(result)
 
 
 class Spider:
@@ -33,6 +32,7 @@ class Spider:
     def __init__(self, url: str):
         self.url = url
         self.page = str()
+        self.base = SqlTool()
         self.app = web.Application()
         self.app.add_routes([web.get('/posts', self.get_posts),
                              web.get('/update', self.update_posts)])
@@ -70,7 +70,7 @@ class Spider:
         except Exception as err:
             print(err)
             return web.json_response(dict(error="Invalid parameter limit"))
-        return web.json_response(base.get_posts(limit))
+        return web.json_response(self.base.get_posts(limit))
 
 
 if __name__ == '__main__':
